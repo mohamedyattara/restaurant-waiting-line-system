@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 public class WaitingLineManager {
@@ -8,6 +10,7 @@ public class WaitingLineManager {
     private PriorityQueue<Customer> regularQueue;
     private static final long PROMOTION_TIME_MS = 30 * 60;
     private List<Table> tables;
+    private Map<String, Integer> seatedCustomers;
 
     public WaitingLineManager() {
         // VIP: FIFO using arrival time
@@ -17,6 +20,8 @@ public class WaitingLineManager {
         this.regularQueue = new PriorityQueue<>(
                 Comparator.comparingLong(Customer::getArrivalTime));
         this.tables = new ArrayList<>();
+        this.seatedCustomers = new HashMap<>();
+
     }
 
     public void addCustomer(Customer c) {
@@ -29,7 +34,7 @@ public class WaitingLineManager {
         }
     }
 
-    public Customer removeNextCustomer() {
+    public Customer removeCustomer() {
         this.promoteWaitingCustomers();
         Customer c;
         if (!this.vipQueue.isEmpty()) {
@@ -91,22 +96,23 @@ public class WaitingLineManager {
         return best;
     }
 
-    public int seatNextCustomer() {
+    public Customer getNextCustomer() {
         this.promoteWaitingCustomers();
-
-        Customer next = null;
-        Table table = null;
-
+        Customer result = null;
         if (!this.vipQueue.isEmpty()) {
-            next = this.vipQueue.peek();
+            result = this.vipQueue.peek();
         } else if (!this.regularQueue.isEmpty()) {
-            next = this.regularQueue.peek();
+            result = this.regularQueue.peek();
         }
+        return result;
+    }
+
+    public int seatNextCustomer() {
+        Customer next = this.getNextCustomer();
         int tableId = -1;
 
         if (next != null) {
-            table = this.findBestAvailableTable(next.getPartySize());
-
+            Table table = this.findBestAvailableTable(next.getPartySize());
             if (table != null) {
                 table.occupy();
                 tableId = table.getTableId();
@@ -116,12 +122,16 @@ public class WaitingLineManager {
                 } else {
                     this.regularQueue.poll();
                 }
-            } else {
-                next = null;
+                this.seatedCustomers.put(next.getName(), tableId);
+
             }
         }
 
         return tableId;
+    }
+
+    public Map<String, Integer> getSeatedCustomers() {
+        return new HashMap<>(this.seatedCustomers);
     }
 
     public void releaseTable(int tableId) {

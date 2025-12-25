@@ -5,6 +5,7 @@ public class Customer {
     private final int partySize;
     private final long arrivalTime;
     private Priority priority;
+    private int seatedTable = -1;
 
     public Customer(int id, String name, int partySize, Priority priority) {
         this.id = id;
@@ -32,6 +33,14 @@ public class Customer {
 
     public int getPartySize() {
         return this.partySize;
+    }
+
+    public void setSeatedTable(int tableId) {
+        this.seatedTable = tableId;
+    }
+
+    public int getSeatedTable() {
+        return this.seatedTable;
     }
 
 }
