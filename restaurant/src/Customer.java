@@ -14,6 +14,10 @@ public class Customer {
         this.arrivalTime = System.currentTimeMillis();
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public long getArrivalTime() {
         return this.arrivalTime;
     }

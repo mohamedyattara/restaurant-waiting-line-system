@@ -30,7 +30,7 @@ public class WaitingLineManager {
     }
 
     public Customer removeNextCustomer() {
-        promoteWaitingCustomers();
+        this.promoteWaitingCustomers();
         Customer c;
         if (!this.vipQueue.isEmpty()) {
             c = this.vipQueue.poll();
@@ -64,6 +64,20 @@ public class WaitingLineManager {
         return state;
     }
 
+    public void addTable(Table table) {
+        if (table == null) {
+            return;
+        }
+
+        for (Table t : this.tables) {
+            if (t.getTableId() == table.getTableId()) {
+                throw new IllegalArgumentException("Duplicate table ID");
+            }
+        }
+
+        this.tables.add(table);
+    }
+
     private Table findBestAvailableTable(int partySize) {
         Table best = null;
         for (Table table : this.tables) {
@@ -77,45 +91,46 @@ public class WaitingLineManager {
         return best;
     }
 
-    public Customer seatNextCustomer() {
-       this.promoteWaitingCustomers();
+    public int seatNextCustomer() {
+        this.promoteWaitingCustomers();
 
-    Customer next = null;
-    Table table = null;
+        Customer next = null;
+        Table table = null;
 
-    if (!this.vipQueue.isEmpty()) {
-        next = this.vipQueue.peek();
-    } else if (!this.regularQueue.isEmpty()) {
-        next = this.regularQueue.peek();
-    }
-
-    if (next != null) {
-        table = this.findBestAvailableTable(next.getPartySize());
-
-        if (table != null) {
-            table.occupy();
-
-            if (next.getPriority() == Priority.VIP) {
-                this.vipQueue.poll();
-            } else {
-                this.regularQueue.poll();
-            }
-        } else {
-            next = null; 
+        if (!this.vipQueue.isEmpty()) {
+            next = this.vipQueue.peek();
+        } else if (!this.regularQueue.isEmpty()) {
+            next = this.regularQueue.peek();
         }
+        int tableId = -1;
+
+        if (next != null) {
+            table = this.findBestAvailableTable(next.getPartySize());
+
+            if (table != null) {
+                table.occupy();
+                tableId = table.getTableId();
+
+                if (next.getPriority() == Priority.VIP) {
+                    this.vipQueue.poll();
+                } else {
+                    this.regularQueue.poll();
+                }
+            } else {
+                next = null;
+            }
+        }
+
+        return tableId;
     }
 
-    return next;
-}
     public void releaseTable(int tableId) {
         for (Table t : this.tables) {
             if (t.getTableId() == tableId) {
                 t.release();
-               
+
             }
         }
     }
 
 }
-
-
