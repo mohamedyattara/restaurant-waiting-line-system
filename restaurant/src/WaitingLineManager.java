@@ -111,10 +111,11 @@ public class WaitingLineManager {
         for (Table t : this.tables) {
             if (t.getTableId() == tableId) {
                 t.release();
-                return;
+               
             }
         }
     }
 
 }
+
 
