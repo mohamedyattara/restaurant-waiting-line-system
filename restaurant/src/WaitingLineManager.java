@@ -8,7 +8,7 @@ import java.util.PriorityQueue;
 public class WaitingLineManager {
     private PriorityQueue<Customer> vipQueue;
     private PriorityQueue<Customer> regularQueue;
-    private static final long PROMOTION_TIME_MS = 30 * 60;
+    private static final long PROMOTION_TIME_MS = 30 * 60 * 1000;
     private List<Table> tables;
     private Map<String, Integer> seatedCustomers;
 
@@ -50,14 +50,14 @@ public class WaitingLineManager {
 
         while (!this.regularQueue.isEmpty()) {
             Customer c = this.regularQueue.peek();
-
-            if (now - c.getArrivalTime() < PROMOTION_TIME_MS) {
+            if (this.vipQueue.isEmpty() || now - c.getArrivalTime() > PROMOTION_TIME_MS) {
+                this.regularQueue.poll();
+                c.SetPriority(Priority.VIP);
+                this.vipQueue.add(c);
+            } else {
                 break;
             }
 
-            this.regularQueue.poll();
-            c.SetPriority(Priority.VIP);
-            this.vipQueue.add(c);
         }
     }
 
@@ -131,7 +131,18 @@ public class WaitingLineManager {
     }
 
     public Map<String, Integer> getSeatedCustomers() {
-        return new HashMap<>(this.seatedCustomers);
+        return this.seatedCustomers;
+    }
+
+    public boolean checkoutCustomer(String name) {
+        if (this.seatedCustomers.containsKey(name)) {
+            int tableId = this.seatedCustomers.get(name);
+            this.releaseTable(tableId);
+            this.seatedCustomers.remove(name);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void releaseTable(int tableId) {
