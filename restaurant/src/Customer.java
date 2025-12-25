@@ -14,4 +14,16 @@ public class Customer {
         this.arrivalTime = System.currentTimeMillis();
     }
 
+    public long getArrivalTime() {
+        return this.arrivalTime;
+    }
+
+    public Priority getPriority() {
+        return this.priority;
+    }
+
+    public void SetPriority(Priority p) {
+        this.priority = p;
+    }
+
 }

@@ -1,7 +1,4 @@
 
-public class Priority {
-
-    public enum level {
-        VIP, REGULAR
-    }
+public enum Priority {
+    VIP, REGULAR
 }
