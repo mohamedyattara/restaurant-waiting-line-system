@@ -111,18 +111,12 @@ public final class Restaurant {
                     // Release a table
                     System.out.println("what is your Name");
                     String n = scanner.nextLine();
-                    Map<String, Integer> seatedCustomers = manager.getSeatedCustomers();
-                    if (seatedCustomers.containsKey(n)) {
-                        int tableId = seatedCustomers.get(n);
-                        manager.releaseTable(tableId);
-                        seatedCustomers.remove(n);
+                    if (manager.checkoutCustomer(n)) {
                         System.out.println("Thank you for coming, " + n + "!");
                     } else {
                         System.out.println(
                                 "No customer with that name is currently seated.");
-
                     }
-
                     break;
 
                 case "4":
