@@ -1,0 +1,17 @@
+
+public class Customer {
+    private final int id;
+    private final String name;
+    private final int partySize;
+    private final long arrivalTime;
+    private Priority priority;
+
+    public Customer(int id, String name, int partySize, Priority priority) {
+        this.id = id;
+        this.name = name;
+        this.partySize = partySize;
+        this.priority = priority;
+        this.arrivalTime = System.currentTimeMillis();
+    }
+
+}
