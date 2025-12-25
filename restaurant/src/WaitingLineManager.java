@@ -30,6 +30,7 @@ public class WaitingLineManager {
     }
 
     public Customer removeNextCustomer() {
+        promoteWaitingCustomers();
         Customer c;
         if (!this.vipQueue.isEmpty()) {
             c = this.vipQueue.poll();
@@ -77,30 +78,35 @@ public class WaitingLineManager {
     }
 
     public Customer seatNextCustomer() {
-        this.promoteWaitingCustomers();
-        Customer next = null;
-        if (!this.vipQueue.isEmpty()) {
-            next = this.vipQueue.peek();
-        } else if (!this.regularQueue.isEmpty()) {
-            next = this.regularQueue.peek();
-        } else {
-            return null;
-        }
-        Table table = this.findBestAvailableTable(next.getPartySize());
-        if (table == null) {
-            return null;
-        }
-        table.occupy();
+       this.promoteWaitingCustomers();
 
-        if (next.getPriority() == Priority.VIP) {
-            this.vipQueue.poll();
-        } else {
-            this.regularQueue.poll();
-        }
+    Customer next = null;
+    Table table = null;
 
-        return next;
+    if (!this.vipQueue.isEmpty()) {
+        next = this.vipQueue.peek();
+    } else if (!this.regularQueue.isEmpty()) {
+        next = this.regularQueue.peek();
     }
 
+    if (next != null) {
+        table = this.findBestAvailableTable(next.getPartySize());
+
+        if (table != null) {
+            table.occupy();
+
+            if (next.getPriority() == Priority.VIP) {
+                this.vipQueue.poll();
+            } else {
+                this.regularQueue.poll();
+            }
+        } else {
+            next = null; 
+        }
+    }
+
+    return next;
+}
     public void releaseTable(int tableId) {
         for (Table t : this.tables) {
             if (t.getTableId() == tableId) {
@@ -111,3 +117,4 @@ public class WaitingLineManager {
     }
 
 }
+
