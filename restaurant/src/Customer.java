@@ -26,4 +26,8 @@ public class Customer {
         this.priority = p;
     }
 
+    public int getPartySize() {
+        return this.partySize;
+    }
+
 }

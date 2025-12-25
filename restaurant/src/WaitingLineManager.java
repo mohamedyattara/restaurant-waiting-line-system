@@ -7,6 +7,7 @@ public class WaitingLineManager {
     private PriorityQueue<Customer> vipQueue;
     private PriorityQueue<Customer> regularQueue;
     private static final long PROMOTION_TIME_MS = 30 * 60;
+    private List<Table> tables;
 
     public WaitingLineManager() {
         // VIP: FIFO using arrival time
@@ -15,6 +16,7 @@ public class WaitingLineManager {
         // Regular: FIFO using arrival time
         this.regularQueue = new PriorityQueue<>(
                 Comparator.comparingLong(Customer::getArrivalTime));
+        this.tables = new ArrayList<>();
     }
 
     public void addCustomer(Customer c) {
@@ -60,4 +62,52 @@ public class WaitingLineManager {
         state.addAll(this.regularQueue);
         return state;
     }
+
+    private Table findBestAvailableTable(int partySize) {
+        Table best = null;
+        for (Table table : this.tables) {
+            if (!table.isOccupied() && table.getCapacity() == partySize) {
+                if (best == null) {
+                    best = table;
+                }
+            }
+        }
+
+        return best;
+    }
+
+    public Customer seatNextCustomer() {
+        this.promoteWaitingCustomers();
+        Customer next = null;
+        if (!this.vipQueue.isEmpty()) {
+            next = this.vipQueue.peek();
+        } else if (!this.regularQueue.isEmpty()) {
+            next = this.regularQueue.peek();
+        } else {
+            return null;
+        }
+        Table table = this.findBestAvailableTable(next.getPartySize());
+        if (table == null) {
+            return null;
+        }
+        table.occupy();
+
+        if (next.getPriority() == Priority.VIP) {
+            this.vipQueue.poll();
+        } else {
+            this.regularQueue.poll();
+        }
+
+        return next;
+    }
+
+    public void releaseTable(int tableId) {
+        for (Table t : this.tables) {
+            if (t.getTableId() == tableId) {
+                t.release();
+                return;
+            }
+        }
+    }
+
 }
