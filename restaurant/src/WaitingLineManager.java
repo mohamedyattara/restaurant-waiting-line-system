@@ -86,7 +86,7 @@ public class WaitingLineManager {
     private Table findBestAvailableTable(int partySize) {
         Table best = null;
         for (Table table : this.tables) {
-            if (!table.isOccupied() && table.getCapacity() == partySize) {
+            if (!table.isOccupied() && table.getCapacity() >= partySize) {
                 if (best == null) {
                     best = table;
                 }
