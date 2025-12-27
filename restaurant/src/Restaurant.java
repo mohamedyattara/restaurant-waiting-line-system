@@ -2,27 +2,28 @@ import java.util.Map;
 import java.util.Scanner;
 
 /**
- * Main driver class for the Restaurant Waiting Line system.
- * Handles user interaction through a console menu.
+ * Main driver class for the Restaurant Waiting Line system. Handles user
+ * interaction through a console menu.
  *
  * @author Mohamed Yattara
  */
 public final class Restaurant {
 
-   /**
-     * Private constructor to prevent creating objects of this class.
-     * This class is only used to run the program.
+    /**
+     * Private constructor to prevent creating objects of this class. This class
+     * is only used to run the program.
      */
     private Restaurant() {
     }
 
-   /**
+    /**
      * Main method that runs the restaurant waiting line system.
      *
-     * @param args command line arguments
+     * @param args
+     *            command line arguments
      */
     public static void main(String[] args) {
-        
+
         // Manager that handles customers, tables, and seating logic
         WaitingLineManager manager = new WaitingLineManager();
 
@@ -31,16 +32,16 @@ public final class Restaurant {
         manager.addTable(new Table(2, 3));
         manager.addTable(new Table(3, 2));
         manager.addTable(new Table(4, 5));
-        
+
         // Scanner for user input
         Scanner scanner = new Scanner(System.in);
-        
+
         // Used to assign unique IDs to customers
         int nextCustomerId = 0;
 
         System.out.println("=== Restaurant Waiting Line System ===");
 
-         // Main menu loop
+        // Main menu loop
         while (true) {
             System.out.println("\nOptions:");
             System.out.println("1 - Add Customer");
@@ -55,13 +56,13 @@ public final class Restaurant {
 
             switch (option) {
                 case "1":
-                     // Add a new customer to the waiting line
+                    // Add a new customer to the waiting line
                     System.out.print("Enter customer name: ");
                     String name = scanner.nextLine();
 
                     int partySize = 0;
                     boolean validInput = false;
-                   
+
                     // Validate party size input
                     while (!validInput) {
                         System.out.print("Enter party size: ");
@@ -78,7 +79,7 @@ public final class Restaurant {
                             System.out.println("Invalid number, try again.");
                         }
                     }
-                    
+
                     // Determine customer priority
                     System.out.print("Is this a VIP customer? (yes/no): ");
                     String vipInput = scanner.nextLine();
@@ -88,7 +89,7 @@ public final class Restaurant {
                     } else {
                         priority = Priority.REGULAR;
                     }
-                    
+
                     // Create and add customer
                     Customer customer = new Customer(nextCustomerId++, name, partySize,
                             priority);
@@ -98,19 +99,19 @@ public final class Restaurant {
                     break;
 
                 case "2":
-                   // Seat the next available customer
+                    // Seat the next available customer
                     Customer next = manager.getNextCustomer();
                     int table = manager.seatNextCustomer();
                     if (table != -1 && next != null) {
-                        System.out.println(
-                                "Seated: " + next.getName() + " (at Table" + table + ")");
+                        System.out.println("Seated: " + next.getName() + " (at Table "
+                                + table + ")");
                     } else {
                         System.out.println("No customer can be seated at the moment.");
                     }
                     break;
 
                 case "3":
-                     // Checkout a seated customer
+                    // Checkout a seated customer
                     System.out.println("what is your Name");
                     String n = scanner.nextLine();
                     if (manager.checkoutCustomer(n)) {
@@ -154,4 +155,3 @@ public final class Restaurant {
     }
 
 }
-

@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -6,8 +7,8 @@ import java.util.Map;
 import java.util.PriorityQueue;
 
 /**
- * Manages the restaurant waiting line, seating logic,
- * customer promotion, and table assignments.
+ * Manages the restaurant waiting line, seating logic, customer promotion, and
+ * table assignments.
  */
 public class WaitingLineManager {
 
@@ -80,8 +81,7 @@ public class WaitingLineManager {
         while (!this.regularQueue.isEmpty()) {
             Customer c = this.regularQueue.peek();
 
-            if (this.vipQueue.isEmpty()
-                    || now - c.getArrivalTime() > PROMOTION_TIME_MS) {
+            if (this.vipQueue.isEmpty() || now - c.getArrivalTime() > PROMOTION_TIME_MS) {
                 this.regularQueue.poll();
                 c.SetPriority(Priority.VIP);
                 this.vipQueue.add(c);
@@ -186,6 +186,7 @@ public class WaitingLineManager {
     public Map<String, Integer> getSeatedCustomers() {
         return this.seatedCustomers;
     }
+
     /**
      * Releases a table by table ID.
      */
@@ -211,6 +212,4 @@ public class WaitingLineManager {
         }
     }
 
-    
 }
-
