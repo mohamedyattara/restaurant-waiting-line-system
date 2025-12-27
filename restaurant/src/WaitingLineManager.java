@@ -186,6 +186,16 @@ public class WaitingLineManager {
     public Map<String, Integer> getSeatedCustomers() {
         return this.seatedCustomers;
     }
+    /**
+     * Releases a table by table ID.
+     */
+    public void releaseTable(int tableId) {
+        for (Table t : this.tables) {
+            if (t.getTableId() == tableId) {
+                t.release();
+            }
+        }
+    }
 
     /**
      * Checks out a customer and frees their table.
@@ -201,14 +211,6 @@ public class WaitingLineManager {
         }
     }
 
-    /**
-     * Releases a table by table ID.
-     */
-    public void releaseTable(int tableId) {
-        for (Table t : this.tables) {
-            if (t.getTableId() == tableId) {
-                t.release();
-            }
-        }
-    }
+    
 }
+
